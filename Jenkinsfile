@@ -14,8 +14,8 @@ node {
           //  }
         //}
     }
-    stage('Deliver') {
+    //stage('Deliver') {
         // Modify the path to deliver.sh according to your project structure
-        sh './jenkins/scripts/deliver.sh'
-    }
+        //sh './jenkins/scripts/deliver.sh'
+    //}
 }
