@@ -1,11 +1,11 @@
 node {
     stage('Build') {
-        withDockerContainer(image: 'maven:3.9.2', args: '-v /root/.m2:/root/.m2') {
+        withDockerContainer(image: 'maven:4.0.0', args: '-v /root/.m2:/root/.m2') {
             sh 'mvn -B -DskipTests clean package'
         }
     }
     stage('Test') {
-        withDockerContainer(image: 'maven:3.9.2', args: '-v /root/.m2:/root/.m2') {
+        withDockerContainer(image: 'maven:4.0.0', args: '-v /root/.m2:/root/.m2') {
             sh 'mvn test'
         }
         post {
