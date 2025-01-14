@@ -1,29 +1,21 @@
-pipeline {
-    agent any
-    stages {
-        stage('Build') {
-            steps {
-                git url: 'https://github.com/cyrille-leclerc/multi-module-maven-project'
-                withMaven {
-                    sh "mvn clean verify"
-                }
-                sh 'mvn -B -DskipTests clean package'
+node {
+    stage('Build') {
+        withDockerContainer(image: 'maven:3.9.2', args: '-v /root/.m2:/root/.m2') {
+            sh 'mvn -B -DskipTests clean package'
+        }
+    }
+    stage('Test') {
+        withDockerContainer(image: 'maven:3.9.2', args: '-v /root/.m2:/root/.m2') {
+            sh 'mvn test'
+        }
+        post {
+            always {
+                junit 'target/surefire-reports/*.xml'
             }
         }
-        stage('Test') {
-            steps {
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                }
-            }
-        }
-        stage('Deliver') {
-            steps {
-                sh './jenkins/scripts/deliver.sh'
-            }
-        }
+    }
+    stage('Deliver') {
+        // Modify the path to deliver.sh according to your project structure
+        sh './jenkins/scripts/deliver.sh'
     }
 }
